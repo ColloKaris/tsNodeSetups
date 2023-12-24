@@ -1,4 +1,12 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response } from 'express';;
+import dotenv from 'dotenv';
+dotenv.config();
+
+// import { config } from 'dotenv';
+// config();
+
+
+console.log(process.env.NUMBER)
 
 const port = 3000;
 
