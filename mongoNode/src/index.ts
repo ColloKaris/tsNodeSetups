@@ -1,39 +1,37 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
-import { connectToDb, client } from './models/dbConnect.js';
+import { connectToDatabase } from './models/dbConnect.js';
 
 // execute express
 const app = express();
-let dbName: string = 'channel';
-let collectionName = 'subscribers';
+const uri = 'mongodb://localhost:27017';
+const client = new MongoClient(uri);
+const dbName = "channel";
+const collectionName = "subscribers"
 
-
-
-
-connectToDb()
-  .then(() => {
-    console.log(`Connected to the database successfully!`);
-    //findData(client);
+async function main(client: MongoClient) {
+  try {
+    await connectToDatabase(client);
     app.listen(3000, () => {
-      console.log('LISTENING ON PORT 3000');
+      console.log('Listening on port 3000');
     });
-    console.log("Hello")
-    //findData(client);
-  })
-  .catch((e) => {
-    console.error(e);
-    console.log('Connection failed');
-  })
-  .finally(() => {
-    client.close().then(()=> {
-      console.log("Connection closed!")
-    })
-  })
+    // The code below is what causes a behaviour I can't explain
+    // const result = await findData();
+    // console.log(result);
   
+    
+  } catch (err) {
+    console.error(err);
+  } finally {
+    await client.close();
+    console.log("Database Connection Closed");
+  }
+}
+main(client);
 
-// function to find data in the collection in the database
-async function findData(client:MongoClient){
+//function to find data in the collection in the database
+async function findData(){
   const result = await client.db(dbName).collection(collectionName).findOne();
   return result;
 }

@@ -3,23 +3,19 @@ import { MongoClient } from 'mongodb';
 
 dotenv.config();
 
-let uri:string;
+let uri: string;
+
+
 if(process.env.DATABASE_URI) {
   uri = process.env.DATABASE_URI;
 }
 
-
-
-export let client:MongoClient;
-
-// script to connect to the database we created
-export async function connectToDb() {
-  // create an instance of MongoClient
-  client = new MongoClient(uri);
-  // connect to the database
+export const connectToDatabase = async(client:MongoClient) => {
   try {
     await client.connect();
-  } catch (e) {
-    console.error(e);
-  } 
+    console.log("CONNECTED TO THE DATABASE");
+  } catch (err) {
+    console.log("ERROR CONNECTING TO THE DATABASE")
+    console.error(err);
+  }
 }
